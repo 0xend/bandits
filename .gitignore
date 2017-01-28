@@ -1,2 +1,3 @@
 .ipynb_checkpoints
 crazy_bandits.egg-info
+*.pyc

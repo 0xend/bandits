@@ -8,7 +8,7 @@ class Environment(object):
         
     def pull(self, i, *ctx):
         r = self.arms[i].pull(*ctx)
-        return max(a.expected(*ctx) for a in arms), r
+        return max(a.expected(*ctx) for a in self.arms), r
 
 class Arm(object):
     
