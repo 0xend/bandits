@@ -23,16 +23,44 @@ class EpsilonGreedyAgent(Agent):
         self.e = e
     
     def play(self, T):
-        Q = np.zeros(self.env.m())
-        N = np.zeros(self.env.m())
+        m = self.env.m()
+        Q = np.zeros(m)
+        N = np.zeros(m)
         choices = np.zeros(T)
         opt_rewards = np.zeros((T, 2))
         for t in xrange(T):
-            i = np.random.randint(0, high=self.env.m()) if self.e > np.random.rand() else np.argmax(Q)
+            i = np.random.randint(0, high=m) if self.e > np.random.rand() else np.argmax(Q)
             opt, reward = self.env.pull(i)
             N[i] += 1
             Q[i] += (reward-Q[i]) / N[i]
             choices[t] = i
             opt_rewards[t, ]  = np.array([opt, reward])
         return choices, opt_rewards
+
+class UCB1Agent(Agent):
+    
+    def __init__(self, env):
+        self.env = env
+    
+    def play(self, T):
+        m = self.env.m()
+        Q = np.zeros(m)
+        N = np.ones(m)
+        choices = np.zeros(T)
+        opt_rewards = np.zeros((T, 2))
+        # init
+        for i in xrange(m):
+            opt_rewards[i, ] = self.env.pull(i)
+            choices[i] = i
+            Q[i] = opt_rewards[i, 1]
+
+        for t in xrange(m, T):
+            i = np.argmax(Q + np.sqrt((2. * np.log(t+1)) / N))
+            opt, reward = self.env.pull(i)
+            N[i] += 1
+            Q[i] += (reward-Q[i]) / N[i]
+            choices[t] = i
+            opt_rewards[t, ]  = np.array([opt, reward])
+        return choices, opt_rewards
+    
 
