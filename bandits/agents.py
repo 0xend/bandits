@@ -62,5 +62,24 @@ class UCB1Agent(Agent):
             choices[t] = i
             opt_rewards[t, ]  = np.array([opt, reward])
         return choices, opt_rewards
+
+class ThompsonBernoulliAgent(Agent):
     
+    def __init__(self, env, alpha, beta):
+        self.env = env
+        self.alpha = alpha
+        self.beta = beta
+    
+    def play(self, T):
+        m = self.env.m()
+        S = np.array([[self.alpha, self.beta]] * m)
+        choices = np.zeros(T)
+        opt_rewards = np.zeros((T, 2))
+        for t in xrange(T):
+            i = np.argmax([beta(*S[i]).rvs() for i in xrange(m)])
+            opt, reward = self.env.pull(i)
+            S[i, reward ^ 1] += 1
+            choices[i] += 1
+            opt_rewards[t, ] = np.array([opt, reward])
+        return choices, opt_rewards    
 
