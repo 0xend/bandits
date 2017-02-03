@@ -10,7 +10,7 @@ def plot_rewards(data):
         rewards_ax.plot(xrange(diffs.shape[0]), diffs, label=label, alpha=0.7)
         rewards_ax.set_title("Rewards")
     rewards_ax.set_xlabel("Timestep")
-    rewards_ax.set_ylabel("Cumulative reward")
+    rewards_ax.set_ylabel("Cumulative regret")
     rewards_ax.legend(bbox_to_anchor=(1.2, 1))
     fig.tight_layout()
     plt.show()
