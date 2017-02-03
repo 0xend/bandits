@@ -85,3 +85,26 @@ class ThompsonBernoulliAgent(Agent):
             opt_rewards[t, ] = np.array([opt, reward])
         return choices, opt_rewards    
 
+class Exp3Agent(Agent):
+
+    def __init__(self, env, gamma):
+        self.env = env
+        self.gamma = gamma
+        
+    def play(self, T):
+        from scipy.stats import rv_discrete
+        
+        m = self.env.m()
+        actions = [i for i in xrange(m)]
+        weights = np.ones(m)
+        choices = np.zeros(T)
+        opt_rewards = np.zeros((T, 2))
+        for t in xrange(T):
+            p = (1 - self.gamma) * weights / np.sum(weights) + self.gamma / m
+            i = rv_discrete(values=(actions, p)).rvs()
+            opt, reward = self.env.pull(i)
+            weights[i] *= np.exp(self.gamma * reward / (p[i] * m))
+            choices[t] = i
+            opt_rewards[t, ] = np.array([opt, reward])
+        return choices, opt_rewards
+
