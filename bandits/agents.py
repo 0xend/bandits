@@ -71,6 +71,8 @@ class ThompsonBernoulliAgent(Agent):
         self.beta = beta
     
     def play(self, T):
+        from scipy.stats import beta
+
         m = self.env.m()
         S = np.array([[self.alpha, self.beta]] * m)
         choices = np.zeros(T)
